@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Forum</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+    <h1 th:text="${topic}">Temat</h1>
+    Komentarze:
+    <div th:each="comment : ${comments}">
+        <span th:text="${comment}"/>
+    </div>
+    <input type="text" th:field="*{newComment}" />
+</body>
+</html>

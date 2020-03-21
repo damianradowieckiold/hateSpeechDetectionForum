@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="pl" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Forum</title>
@@ -11,7 +12,7 @@
     <br>
     <h2>Wybierz temat:</h2>
     <div th:each="topic : ${topics}">
-        <a href="#"><span th:text="${topic}"/></a>
+        <a th:href="@{/topic}"><span th:text="${topic.name}"/></a>
     </div>
 </body>
 </html>
