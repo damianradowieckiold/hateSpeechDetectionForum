@@ -18,7 +18,7 @@ public class HomeController {
 
     @GetMapping
     public String startPage(Model model){
-        model.addAttribute("topics", repository.getAll());
+        model.addAttribute("topics", repository.findAll());
         return "home";
     }
 
