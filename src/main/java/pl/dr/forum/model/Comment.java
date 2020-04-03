@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class Comment {
     @Id
     @GeneratedValue
+    @Getter
     private int id;
     @Getter
     private String content;

@@ -16,6 +16,7 @@ public class Topic {
 
     @Id
     @GeneratedValue
+    @Getter
     private int id;
     @Getter
     private String name;
@@ -33,5 +34,9 @@ public class Topic {
 
     public void addComment(String comment){
         this.comments.add(new Comment(comment));
+    }
+
+    public List<Comment> getComments() {
+        return this.comments;
     }
 }

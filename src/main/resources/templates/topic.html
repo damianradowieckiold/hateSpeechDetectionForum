@@ -7,11 +7,10 @@
     <link rel="stylesheet" th:href="@{/styles.css}" />
 </head>
 <body>
-    <h1 th:text="${topic}">Temat</h1>
+    <h1 th:text="${topic.name}">Temat</h1>
     Komentarze:
     <div th:each="comment : ${comments}">
-        <span th:text="${comment}"/>
+        <span th:text="${comment.content}"/>
     </div>
-    <input type="text" th:field="*{newComment}" />
 </body>
 </html>
