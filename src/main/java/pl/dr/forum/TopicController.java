@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.dr.forum.model.Comment;
 import pl.dr.forum.model.Topic;
 import pl.dr.forum.repository.TopicRepository;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,19 +28,18 @@ public class TopicController {
         Optional<Topic> topic = topicRepository.findById(topicId);
         model.addAttribute("topic", topic.orElse(new Topic()));
         model.addAttribute("comments", topic.isPresent() ? topic.get().getComments() : Collections.emptyList());
+        model.addAttribute("newComment", new Comment());
         return "topic";
     }
 
-    @PutMapping("/topic/comment")
-    public String addComment(Model model){
-        String topic = "O testowaniu aplikacji";
-        List<String> comments = new ArrayList<>();
-        comments.add("O ptakach");
-        comments.add("O drzewach");
-
-        model.addAttribute("newComment", new String());
+    @PutMapping("/topic/{id}/comment")
+    public String addComment(@PathVariable("id") int topicId, Comment newComment, Model model){
+        Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
+        topic.addComment(newComment);
+        topicRepository.save(topic);
         model.addAttribute("topic", topic);
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", topic.getComments());
+        model.addAttribute("newComment", new Comment());
         return "topic";
     }
 

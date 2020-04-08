@@ -12,5 +12,10 @@
     <div th:each="comment : ${comments}">
         <span th:text="${comment.content}"/>
     </div>
+    <form th:object="${newComment}" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  method="put">
+        <input th:field="*{content}"/>
+        <input type="submit" value="Dodaj komentarz"/>
+
+    </form>
 </body>
 </html>

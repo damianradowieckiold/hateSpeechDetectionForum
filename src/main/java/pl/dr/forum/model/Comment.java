@@ -2,6 +2,7 @@ package pl.dr.forum.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ public class Comment {
     @Getter
     private int id;
     @Getter
+    @Setter
     private String content;
     @Getter
     @ManyToOne(fetch = FetchType.LAZY)
