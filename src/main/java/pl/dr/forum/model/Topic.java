@@ -2,11 +2,9 @@ package pl.dr.forum.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +15,14 @@ public class Topic {
     @Id
     @GeneratedValue
     @Getter
+    @Setter
     private int id;
     @Getter
+    @Setter
     private String name;
-    @OneToMany(mappedBy = "topic")
+    @Getter
+    @Setter
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
     public Topic(String name){

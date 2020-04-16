@@ -7,15 +7,15 @@
     <link rel="stylesheet" th:href="@{/styles.css}" />
 </head>
 <body>
+    <h1> <a th:href="@{'/'}"><span th:text="Forum"/></a></h1>
     <h1 th:text="${topic.name}">Temat</h1>
-    Komentarze:
-    <div th:each="comment : ${comments}">
+    <div style="text-align:center">Komentarze:</div>
+    <div style="text-align:center"  th:each="comment : ${comments}">
         <span th:text="${comment.content}"/>
     </div>
-    <form th:object="${newComment}" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  method="put">
-        <input th:field="*{content}"/>
-        <input type="submit" value="Dodaj komentarz"/>
-
+    <form style="text-align:center" th:object="${newComment}" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  th:method="PUT">
+        <input  th:field="*{content}"/>
+        <button type="submit">Dodaj komentarz</button>
     </form>
 </body>
 </html>

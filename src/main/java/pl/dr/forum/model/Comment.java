@@ -17,6 +17,7 @@ public class Comment {
     @Setter
     private String content;
     @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     private Topic topic;
 

@@ -7,12 +7,16 @@
     <link rel="stylesheet" th:href="@{/styles.css}" />
 </head>
 <body>
-    <h1>Forum</h1>
+    <h1> <a th:href="@{'/'}"><span th:text="Forum"/></a></h1>
     <br>
     <br>
     <h2>Wybierz temat:</h2>
-    <div th:each="topic : ${topics}">
+    <div style="text-align:center" th:each="topic : ${topics}">
         <a th:href="@{'/topic/' + ${topic.id}}"><span th:text="${topic.name}"/></a>
     </div>
+    <form style="text-align:center" th:object="${newTopic}" th:action="@{'/topic'}"  th:method="PUT">
+        <input th:field="*{name}"/>
+        <button type="submit">Dodaj temat</button>
+    </form>
 </body>
 </html>
