@@ -9,6 +9,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Comment {
+
+    public static final int HATE_SPEECH_COUNTER_LIMIT = 10;
+
     @Id
     @GeneratedValue
     @Getter
@@ -20,8 +23,15 @@ public class Comment {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     private Topic topic;
+    @Getter
+    @Setter
+    private int hateSpeechCount;
+    @Getter
+    @Setter
+    private boolean hateSpeech;
 
     public Comment(String comment) {
         this.content = comment;
+        //TODO check if hate speech
     }
 }

@@ -12,9 +12,12 @@ import pl.dr.forum.model.Comment;
 import pl.dr.forum.model.Topic;
 import pl.dr.forum.repository.CommentRepository;
 import pl.dr.forum.repository.TopicRepository;
+import pl.dr.forum.service.HateSpeechService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -27,11 +30,14 @@ public class TopicController {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private HateSpeechService hateSpeechService;
+
     @GetMapping("/{id}")
     public String topic(@PathVariable("id") int topicId, Model model){
         Optional<Topic> topic = topicRepository.findById(topicId);
         model.addAttribute("topic", topic.orElse(new Topic()));
-        model.addAttribute("comments", topic.isPresent() ? topic.get().getComments() : Collections.emptyList());
+        model.addAttribute("comments", topic.isPresent() ? filter(topic.get().getComments()) : Collections.emptyList());
         model.addAttribute("newComment", new Comment());
         return "topic";
     }
@@ -44,9 +50,32 @@ public class TopicController {
         commentRepository.save(newComment);
         topicRepository.save(topic);
         model.addAttribute("topic", topic);
-        model.addAttribute("comments", topic.getComments());
+        model.addAttribute("comments", filter(topic.getComments()));
         model.addAttribute("newComment", new Comment());
         return "topic";
+    }
+
+    @PostMapping("/{id}/comment/{commentId}")
+    public String addComment(@PathVariable("id") int topicId, @PathVariable("commentId") int commentId, Model model){
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+        comment.setHateSpeechCount(comment.getHateSpeechCount() + 1);
+        commentRepository.save(comment);
+        if(comment.getHateSpeechCount() >= Comment.HATE_SPEECH_COUNTER_LIMIT){
+            hateSpeechService.markAsHateSpeech(comment);
+            //info to user
+        }
+        Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
+        model.addAttribute("topic", topic);
+        model.addAttribute("comments", filter(topic.getComments()));
+        model.addAttribute("newComment", new Comment());
+        return "topic";
+    }
+
+    private List<Comment> filter(List<Comment> comments){
+        return comments
+                .stream()
+                .filter(c -> !c.isHateSpeech())
+                .collect(Collectors.toList());
     }
 
 }

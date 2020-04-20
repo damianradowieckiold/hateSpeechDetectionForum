@@ -11,7 +11,10 @@
     <h1 th:text="${topic.name}">Temat</h1>
     <div style="text-align:center">Komentarze:</div>
     <div style="text-align:center"  th:each="comment : ${comments}">
-        <span th:text="${comment.content}"/>
+        <form style="text-align:center" th:action="@{'/topic/' + ${topic.id} + '/comment/' + ${comment.id}}"  th:method="PUT">
+            <span th:text="${comment.content}"/><button type="submit">Potencjalny hate speech</button>
+        </form>
+
     </div>
     <form style="text-align:center" th:object="${newComment}" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  th:method="PUT">
         <input  th:field="*{content}"/>
