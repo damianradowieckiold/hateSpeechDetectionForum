@@ -60,14 +60,16 @@ public class TopicController {
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
         comment.setHateSpeechCount(comment.getHateSpeechCount() + 1);
         commentRepository.save(comment);
+        String info ="";
         if(comment.getHateSpeechCount() >= Comment.HATE_SPEECH_COUNTER_LIMIT){
             hateSpeechService.markAsHateSpeech(comment);
-            //info to user
+            info = "Komentarz zakwalifikowany jako hate speech";
         }
         Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
         model.addAttribute("topic", topic);
         model.addAttribute("comments", filter(topic.getComments()));
         model.addAttribute("newComment", new Comment());
+        model.addAttribute("info", info);
         return "topic";
     }
 
