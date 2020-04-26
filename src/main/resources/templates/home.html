@@ -14,9 +14,10 @@
     <div style="text-align:center" th:each="topic : ${topics}">
         <a th:href="@{'/topic/' + ${topic.id}}"><span th:text="${topic.name}"/></a>
     </div>
-    <form style="text-align:center" th:object="${newTopic}" th:action="@{'/topic'}"  th:method="PUT">
+    <form style="text-align:center" th:object="${newTopic}" action="#" th:action="@{'/topic'}"  th:method="post">
         <input th:field="*{name}"/>
         <button type="submit">Dodaj temat</button>
+        <span style="color:red;" th:text="${error}" />
     </form>
 </body>
 </html>

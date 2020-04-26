@@ -10,16 +10,17 @@
     <h1> <a th:href="@{'/'}"><span th:text="Forum"/></a></h1>
     <h1 th:text="${topic.name}">Temat</h1>
     <div style="text-align:center">Komentarze:</div>
-    <span th:text="${info}" />
+    <div style="text-align:center;"><span style="color:red;" th:text="${info}" /></div>
     <div style="text-align:center"  th:each="comment : ${comments}">
         <form style="text-align:center" th:action="@{'/topic/' + ${topic.id} + '/comment/' + ${comment.id}}"  th:method="PUT">
             <span th:text="${comment.content}"/><button type="submit">Potencjalny hate speech</button>
         </form>
 
     </div>
-    <form style="text-align:center" th:object="${newComment}" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  th:method="PUT">
+    <form style="text-align:center" th:object="${newComment}" action="#" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  th:method="post">
         <input  th:field="*{content}"/>
         <button type="submit">Dodaj komentarz</button>
+        <span style="color:red;" th:text="${error}" />
     </form>
 </body>
 </html>

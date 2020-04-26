@@ -4,11 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.dr.forum.model.Topic;
 import pl.dr.forum.repository.TopicRepository;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 @Slf4j
 @Controller
@@ -26,8 +30,13 @@ public class HomeController {
     }
 
     @PostMapping("topic")
-    public String addTopic(Topic newTopic, Model model){
-        repository.save(newTopic);
+    public String addTopic(@Valid Topic newTopic, BindingResult bindingResult, Model model) throws NoSuchFieldException {
+        if(!bindingResult.hasErrors()){
+            repository.save(newTopic);
+        }
+        else{
+            model.addAttribute("error",  newTopic.getClass().getDeclaredField("name").getDeclaredAnnotation(Size.class).message());
+        }
         model.addAttribute("topics", repository.findAll());
         model.addAttribute("newTopic", new Topic());
         return "home";

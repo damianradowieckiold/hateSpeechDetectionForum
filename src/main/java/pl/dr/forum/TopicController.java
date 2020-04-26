@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,8 @@ import pl.dr.forum.repository.CommentRepository;
 import pl.dr.forum.repository.TopicRepository;
 import pl.dr.forum.service.HateSpeechService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,12 +46,20 @@ public class TopicController {
     }
 
     @PostMapping("/{id}/comment")
-    public String addComment(@PathVariable("id") int topicId, Comment newComment, Model model){
+    public String addComment(@PathVariable("id") int topicId, @Valid Comment newComment, BindingResult bindingResult, Model model) throws NoSuchFieldException {
         Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
-        topic.addComment(newComment);
-        newComment.setTopic(topic);
-        commentRepository.save(newComment);
-        topicRepository.save(topic);
+
+        if(!bindingResult.hasErrors()){
+            //TODO hate speech validation
+            topic.addComment(newComment);
+            newComment.setTopic(topic);
+            commentRepository.save(newComment);
+            topicRepository.save(topic);
+        }
+        else{
+            model.addAttribute("error",  newComment.getClass().getDeclaredField("content").getDeclaredAnnotation(Size.class).message());
+        }
+
         model.addAttribute("topic", topic);
         model.addAttribute("comments", filter(topic.getComments()));
         model.addAttribute("newComment", new Comment());
@@ -56,7 +67,7 @@ public class TopicController {
     }
 
     @PostMapping("/{id}/comment/{commentId}")
-    public String addComment(@PathVariable("id") int topicId, @PathVariable("commentId") int commentId, Model model){
+    public String markCommentAsHateSpeech(@PathVariable("id") int topicId, @PathVariable("commentId") int commentId, Model model){
         Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
         comment.setHateSpeechCount(comment.getHateSpeechCount() + 1);
         commentRepository.save(comment);
