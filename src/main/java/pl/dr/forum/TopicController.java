@@ -17,9 +17,7 @@ import pl.dr.forum.service.HateSpeechService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +25,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/topic")
 public class TopicController {
 
+    public static final String NEW_COMMENT_IS_HATE_SPEECH = "Nowy komentarz jest obraźliwy, nie może zostać dodany (wykrytow hate speech).";
+    public static final String COMMENT_QUALIFIED_AS_HATE_SPEECH = "Komentarz zakwalifikowany jako hate speech";
     @Autowired
     private TopicRepository topicRepository;
 
@@ -38,49 +38,59 @@ public class TopicController {
 
     @GetMapping("/{id}")
     public String topic(@PathVariable("id") int topicId, Model model){
-        Optional<Topic> topic = topicRepository.findById(topicId);
-        model.addAttribute("topic", topic.orElse(new Topic()));
-        model.addAttribute("comments", topic.isPresent() ? filter(topic.get().getComments()) : Collections.emptyList());
-        model.addAttribute("newComment", new Comment());
-        return "topic";
+        Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
+        return toTopicPage(model, topic);
     }
 
     @PostMapping("/{id}/comment")
     public String addComment(@PathVariable("id") int topicId, @Valid Comment newComment, BindingResult bindingResult, Model model) throws NoSuchFieldException {
         Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
 
-        if(!bindingResult.hasErrors()){
-            //TODO hate speech validation
-            topic.addComment(newComment);
-            newComment.setTopic(topic);
-            commentRepository.save(newComment);
-            topicRepository.save(topic);
-        }
-        else{
-            model.addAttribute("error",  newComment.getClass().getDeclaredField("content").getDeclaredAnnotation(Size.class).message());
+        if(bindingResult.hasErrors()){
+            model.addAttribute("error", retrieveAnnotationMessage(newComment));
+        } else if(hateSpeechService.isHateSpeech(newComment)){
+            model.addAttribute("error", NEW_COMMENT_IS_HATE_SPEECH);
+        } else{
+            addComment(newComment, topic);
         }
 
-        model.addAttribute("topic", topic);
-        model.addAttribute("comments", filter(topic.getComments()));
-        model.addAttribute("newComment", new Comment());
-        return "topic";
+        return toTopicPage(model, topic);
+    }
+
+    private String retrieveAnnotationMessage(@Valid Comment newComment) throws NoSuchFieldException {
+        return newComment.getClass().getDeclaredField("content").getDeclaredAnnotation(Size.class).message();
     }
 
     @PostMapping("/{id}/comment/{commentId}")
     public String markCommentAsHateSpeech(@PathVariable("id") int topicId, @PathVariable("commentId") int commentId, Model model){
-        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
-        comment.setHateSpeechCount(comment.getHateSpeechCount() + 1);
-        commentRepository.save(comment);
-        String info ="";
-        if(comment.getHateSpeechCount() >= Comment.HATE_SPEECH_COUNTER_LIMIT){
-            hateSpeechService.markAsHateSpeech(comment);
-            info = "Komentarz zakwalifikowany jako hate speech";
+        Comment comment = markAsPotentialHateSpeech(commentId);
+        String info = "";
+        if(comment.isHateSpeech()){
+            info = COMMENT_QUALIFIED_AS_HATE_SPEECH;
         }
         Topic topic = topicRepository.findById(topicId).orElseThrow(IllegalStateException::new);
+        model.addAttribute("info", info);
+        return toTopicPage(model, topic);
+    }
+
+    /**
+     * Marks comment as potential hate speech. If comment will reach Comment.HATE_SPEECH_COUNTER_LIMIT,
+     * then comment is marked as hate speech.
+     */
+    private Comment markAsPotentialHateSpeech(int commentId){
+        Comment comment = commentRepository.findById(commentId).orElseThrow(IllegalArgumentException::new);
+        comment.setHateSpeechCount(comment.getHateSpeechCount() + 1);
+        if(comment.getHateSpeechCount() >= Comment.HATE_SPEECH_COUNTER_LIMIT){
+            hateSpeechService.markAsHateSpeech(comment);
+        }
+        commentRepository.save(comment);
+        return comment;
+    }
+
+    private String toTopicPage(Model model, Topic topic) {
         model.addAttribute("topic", topic);
         model.addAttribute("comments", filter(topic.getComments()));
         model.addAttribute("newComment", new Comment());
-        model.addAttribute("info", info);
         return "topic";
     }
 
@@ -89,6 +99,13 @@ public class TopicController {
                 .stream()
                 .filter(c -> !c.isHateSpeech())
                 .collect(Collectors.toList());
+    }
+
+    private void addComment(@Valid Comment newComment, Topic topic) {
+        topic.addComment(newComment);
+        newComment.setTopic(topic);
+        commentRepository.save(newComment);
+        topicRepository.save(topic);
     }
 
 }

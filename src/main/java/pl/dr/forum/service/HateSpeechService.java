@@ -8,6 +8,8 @@ import pl.dr.forum.repository.CommentRepository;
 @Service
 public class HateSpeechService {
 
+    private static final float TRESHOLD = .7f;
+
     @Autowired
     private CommentRepository commentRepository;
 
@@ -15,4 +17,10 @@ public class HateSpeechService {
         comment.setHateSpeech(true);
         commentRepository.save(comment);
     }
+
+    public boolean isHateSpeech(Comment comment){
+        return comment.getContent().toLowerCase().equals("kurwa") || comment.getContent().toLowerCase().equals("fuck");
+    }
+
+
 }

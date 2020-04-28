@@ -38,11 +38,4 @@ public class Topic {
         this.comments.add(comment);
     }
 
-    public void addComment(String comment){
-        this.comments.add(new Comment(comment));
-    }
-
-    public List<Comment> getComments() {
-        return this.comments;
-    }
 }

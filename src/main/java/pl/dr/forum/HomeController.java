@@ -24,9 +24,7 @@ public class HomeController {
 
     @GetMapping
     public String startPage(Model model){
-        model.addAttribute("topics", repository.findAll());
-        model.addAttribute("newTopic", new Topic());
-        return "home";
+        return toHomePage(model);
     }
 
     @PostMapping("topic")
@@ -35,11 +33,21 @@ public class HomeController {
             repository.save(newTopic);
         }
         else{
-            model.addAttribute("error",  newTopic.getClass().getDeclaredField("name").getDeclaredAnnotation(Size.class).message());
+            model.addAttribute("error", retrieveAnnotationMessage(newTopic));
         }
+        return toHomePage(model);
+    }
+
+    private String retrieveAnnotationMessage(@Valid Topic newTopic) throws NoSuchFieldException {
+        return newTopic.getClass().getDeclaredField("name").getDeclaredAnnotation(Size.class).message();
+    }
+
+    private String toHomePage(Model model) {
         model.addAttribute("topics", repository.findAll());
         model.addAttribute("newTopic", new Topic());
         return "home";
     }
+
+
 
 }
