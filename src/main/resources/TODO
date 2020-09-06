@@ -1,1 +1,47 @@
 -mechanizmy uczenia maszynowego
+ OpenNLP
+
+Maven dependencies:
+ https://opennlp.apache.org/maven-dependency.html
+Tutorial:
+https://www.tutorialspoint.com/opennlp/opennlp_overview.htm
+
+
+https://stackoverflow.com/questions/44781094/sentiment-analysis-with-opennlp
+https://stackoverflow.com/questions/42908442/opennlp-categorize-content-return-always-first-category
+https://github.com/mmm0469/apache-opennlp-examples
+https://opennlp.apache.org/docs/1.8.2/manual/opennlp.html#tools.doccat.classifying
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MATERIALY OD M MAJ:
+
+Vader ocena sentymentu:
+https://github.com/cjhutto/vaderSentiment
+
+Korpus języka polskiego
+http://nkjp.pl/
+
+
+Analiza artykuły:
+https://medium.com/analytics-vidhya/simplifying-social-media-sentiment-analysis-using-vader-in-python-f9e6ec6fc52f
+https://www.guru99.com/nlp-tutorial.html#4
+https://github.com/piotrl/twitter-sentiment-analysis
+https://towardsdatascience.com/twitter-sentiment-analysis-classification-using-nltk-python-fa912578614c
+https://pl.wikipedia.org/wiki/Naiwny_klasyfikator_bayesowski
+https://github.com/AleksanderObuchowski/Polish_Sentiment_Analysis
