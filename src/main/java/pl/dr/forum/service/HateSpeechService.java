@@ -1,6 +1,5 @@
 package pl.dr.forum.service;
 
-import net.nunoachenriques.vader.SentimentAnalysis;
 import opennlp.tools.doccat.*;
 import opennlp.tools.langdetect.*;
 import opennlp.tools.ml.perceptron.PerceptronTrainer;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dr.forum.model.Comment;
 import pl.dr.forum.repository.CommentRepository;
-import pl.dr.forum.vader.Polish;
-import pl.dr.forum.vader.PolishTokenizer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Scanner;
 
 @Service
@@ -66,12 +62,10 @@ public class HateSpeechService {
 
         for (String sentence : sentences) {
             System.out.println(sentence);
-            SentimentAnalysis sentimentAnalysis = new SentimentAnalysis(new Polish(), new PolishTokenizer());
-            Map<String, Float> result = sentimentAnalysis.getSentimentAnalysis(sentence);
+            //SentimentAnalysis sentimentAnalysis = new SentimentAnalysis(new English(), new PolishTokenizer());
+
             //System.out.println(sentimentAnalyzer.getPolarity());
-            for(String key: result.keySet()){
-                System.out.println(key + " : " + result.get(key));
-            }
+
         }
     }
 

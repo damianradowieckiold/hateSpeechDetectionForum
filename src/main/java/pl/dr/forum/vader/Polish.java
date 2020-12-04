@@ -15,7 +15,9 @@ import java.util.Map;
 public class Polish implements Language {
     private static final ClassLoader LOADER = English.class.getClassLoader();
     private static final List<String> PUNCTUATION = Arrays.asList(".", "!", "?", ",", ";", ":", "-", "'", "\"", "!!", "!!!", "??", "???", "?!?", "!?!", "?!?!", "!?!?");
-    private static final List<String> NEGATIVE_WORDS = Arrays.asList("nie", "brak", "", //TODO
+    private static final List<String> NEGATIVE_WORDS = Arrays.asList("nie", "brak", "brakuje",
+            "brakowało", "brakować", "zabrakło", "zabraknie", "brakujący", "bez", //TODO
+            "rzadko", "pomimo", "mimo",
             "cant", "couldnt", "darent", "didnt", "doesnt", "ain't", "aren't", "can't", "couldn't",
             "daren't", "didn't", "doesn't", "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt",
             "mustnt", "neither", "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't",
@@ -24,7 +26,7 @@ public class Polish implements Language {
             "wasn't", "weren't", "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite");
     private static final Map<String, Float> BOOSTER_DICTIONARY = createBoosterDictionary();
     private static final Map<String, Float> SENTIMENT_LADEN_IDIOMS = createSentimentLadenIdioms();
-    private static final Map<String, Float> WORD_VALENCE_DICTIONARY = getWordValenceDictionary("net/nunoachenriques/vader/lexicon/english.txt");
+    private static final Map<String, Float> WORD_VALENCE_DICTIONARY = getWordValenceDictionary("polish/vader.txt");
 
     private static Map<String, Float> createBoosterDictionary() {
         Map<String, Float> m = new HashMap();
