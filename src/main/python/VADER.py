@@ -1,23 +1,20 @@
 # Based on examples from project https://github.com/cjhutto/vaderSentiment
+# **Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.**
+import sys
 
-import json
-
-import requests
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-sentence=input("Wprowadz linie do oceny: ")
-api_url = "http://mymemory.translated.net/api/get?q={}&langpair={}|{}".format(sentence, 'pl-PL', 'en-US')
-hdrs = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-    'Accept-Encoding': 'none',
-    'Accept-Language': 'en-US,en;q=0.8',
-    'Connection': 'keep-alive'}
-response = requests.get(api_url, headers=hdrs)
-response_json = json.loads(response.text)
-translation = response_json["responseData"]["translatedText"]
+from translate.translator import Translator
+
+sentence = None
+if(len(sys.argv) > 1):
+    sentence = sys.argv[1]
+else:
+    sentence=input("Wprowadz linie do oceny: ")
+
+
+translation = Translator().pl_to_en(sentence)
 
 analyzer = SentimentIntensityAnalyzer()
-print(translation)
-print(analyzer.polarity_scores(translation))
+polarity_scores = analyzer.polarity_scores(translation)
+print(polarity_scores['compound'] < -0.09799749720143784)

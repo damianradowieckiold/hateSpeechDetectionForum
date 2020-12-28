@@ -15,7 +15,7 @@
         <form style="text-align:center" th:action="@{'/topic/' + ${topic.id} + '/comment/' + ${comment.id}}"  th:method="PUT">
             <span th:text="${comment.content}"/><button type="submit">Potencjalny hate speech</button>
         </form>
-
+w
     </div>
     <form style="text-align:center" th:object="${newComment}" action="#" th:action="@{'/topic/' + ${topic.id} + '/comment'}"  th:method="post">
         <input  th:field="*{content}"/>

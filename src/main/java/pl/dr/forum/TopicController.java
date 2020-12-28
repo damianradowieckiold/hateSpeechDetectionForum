@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/topic")
 public class TopicController {
 
-    public static final String NEW_COMMENT_IS_HATE_SPEECH = "Nowy komentarz jest obraźliwy, nie może zostać dodany (wykrytow hate speech).";
+    public static final String NEW_COMMENT_IS_HATE_SPEECH = "Nowy komentarz jest obraźliwy, nie może zostać dodany.";
     public static final String COMMENT_QUALIFIED_AS_HATE_SPEECH = "Komentarz zakwalifikowany jako hate speech";
     @Autowired
     private TopicRepository topicRepository;
@@ -48,7 +48,7 @@ public class TopicController {
 
         if(bindingResult.hasErrors()){
             model.addAttribute("error", retrieveAnnotationMessage(newComment));
-        } else if(hateSpeechService.isHateSpeech(newComment)){
+        } else if(hateSpeechService.isHateSpeech(newComment.getContent())){
             model.addAttribute("error", NEW_COMMENT_IS_HATE_SPEECH);
         } else{
             addComment(newComment, topic);

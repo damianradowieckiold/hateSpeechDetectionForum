@@ -22,7 +22,7 @@ public class Topic {
     @Getter
     @Setter
     @NotNull(message = "Nazwa nie może być pusta")
-    @Size(min = 2, message = "Nazwa musi być służsza niż 2 znaki.")
+    @Size(min = 2, message = "Nazwa musi być dłuższa niż 2 znaki.")
     private String name;
     @Getter
     @Setter

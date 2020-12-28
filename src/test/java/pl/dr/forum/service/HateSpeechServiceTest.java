@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.dr.forum.ForumApplication;
-import pl.dr.forum.model.Comment;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,6 +18,6 @@ class HateSpeechServiceTest {
 
     @Test
     void isHateSpeech() {
-        assertTrue(hateSpeechService.isHateSpeech(new Comment("kurwa")));
+        assertTrue(hateSpeechService.isHateSpeech("kurwa"));
     }
 }
