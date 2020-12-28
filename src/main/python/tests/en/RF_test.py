@@ -13,7 +13,7 @@ df = load_polish_all()
 
 TextPreprocessor().clean_data_frame(df)
 
-rf = joblib.load(r"..\model\rf_model")
+rf = joblib.load(r"..\..\model\en\rf_model")
 
 from sklearn.metrics import classification_report
 y_pred = rf.predict(df['tweet'])

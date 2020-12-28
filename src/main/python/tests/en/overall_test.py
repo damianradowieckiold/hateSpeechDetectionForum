@@ -8,7 +8,7 @@ df = load_english_all()
 
 from predict.en.RandomForest import predict as RFPredict
 from predict.en.RNN_EN import predict as RNNPredict
-from VADER_EN import predict as VADERPredict
+from predict.en.VADER_EN import predict as VADERPredict
 
 unclear_situations_count = 0
 vader_true_in_unclear_situation = 0

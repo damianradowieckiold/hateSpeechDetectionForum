@@ -50,5 +50,4 @@ rf = Pipeline([('vect', CountVectorizer()),
                ])
 rf.fit(X_train, y_train)
 
-
-joblib.dump(rf, r"model\rf_model", compress = 1)
+joblib.dump(rf, r"..\..\model\rf_model", compress=1)

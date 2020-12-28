@@ -6,6 +6,10 @@ import numpy as np
 from nltk.corpus import stopwords
 
 
+def remove_quotes(sentence):
+    return sentence.lstrip("'").rstrip("'").lstrip('\"').rstrip('\"')
+
+
 class TextPreprocessor:
 
     def __init__(self):
@@ -22,45 +26,32 @@ class TextPreprocessor:
     def clean_data_frame(self, df):
         # to lower
         df["tweet"] = df["tweet"].apply(lambda x: x.lower())
-        print(df.head())
         # spaces or #blablabla with spaces (leftmost)
         df["tweet"] = [re.sub('(@[^\s]+)|(#[^\s]+)', '', tweet) for tweet in df["tweet"]]
-        print(df.head())
         # urls (leftmost)
         df["tweet"] = [re.sub('((www\.[^\s]+)|(https?://[^\s]+))','',tweet) for tweet in df["tweet"]]
-        print(df.head())
         # something starting from single quote or ampresand (leftmost)
         df["tweet"] = [re.sub('(\'[^\s]+)|(&[^\s]+)','',tweet) for tweet in df["tweet"]]
-        print(df.head())
         # everything what is not: word, space / : % . , - (leftmost)
         df["tweet"] = [re.sub('[^\w\s/:%.,_-]','',tweet) for tweet in df["tweet"]]
-        print(df.head())
         # removes all single characters !"#$%&'()*+, -./:;<=>?@[\]^_`{|}~
         # TODO VADER don't like it
         df["tweet"] = df["tweet"].apply(lambda tweet: tweet.translate(str.maketrans('', '', string.punctuation)))
-        print(df.head())
         # removes all single characters 0123456789❤♀️♥⚽️《
         df["tweet"] = df["tweet"].apply(lambda tweet: tweet.translate(str.maketrans('', '', "0123456789❤♀️♥⚽️《")))
-        print(df.head())
         # removes all stopwords (look at comments below)
         # TODO VADER don't like it
         df["tweet"] = df["tweet"].str.split(' ').apply(lambda tweet: ' '.join(k for k in tweet if k not in self.STOPWORDS))
-        print(df.head())
         # removes all 'things' that are not in nltk words library
         df["tweet"] = df["tweet"].str.split(' ').apply(lambda tweet: ' '.join(k for k in tweet if k in self.WORDS))
-        print(df.head())
         # replaces ' +' with ' ' for example: AAA +BBB -> AAA BBB
         df["tweet"] = df["tweet"].str.replace(' +', ' ', case=False)
-        print(df.head())
         # removes blank characters at the begining and at the end
         df["tweet"] = df["tweet"].str.strip()
-        print(df.head())
         # removes AAA300, 34HSF...
         df["tweet"].replace('', np.nan, inplace=True)
-        print(df.head())
         # removes all tweets that has no value
         df.dropna(subset=["tweet"], inplace=True)
-        print(df.head())
 
 # STOPWORDS
 # {‘ourselves’, ‘hers’, ‘between’, ‘yourself’, ‘but’, ‘again’, ‘there’, ‘about’, ‘once’, ‘during’, ‘out’, ‘very’, ‘having’,

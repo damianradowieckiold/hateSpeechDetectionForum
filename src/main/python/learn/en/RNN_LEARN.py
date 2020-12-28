@@ -89,4 +89,4 @@ model.fit(x_train, y_train, batch_size=batch_size,
     verbose=1,
     validation_split=0.1)
 
-model.save(r"model\rnn_model2")
+model.save(r"..\..\model\rnn_model2")

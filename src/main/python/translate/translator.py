@@ -3,6 +3,8 @@ from os import path
 
 import requests
 
+from preprocessing.en.TextPreprocessing import remove_quotes
+
 
 class Translator:
     """
@@ -32,4 +34,4 @@ class Translator:
         response = requests.post(constructed_url, headers=self.headers, json=body)
         response = response.json()
         result = response[0]['translations'][0]['text']
-        return result.lstrip("'").rstrip("'")
+        return remove_quotes(result)

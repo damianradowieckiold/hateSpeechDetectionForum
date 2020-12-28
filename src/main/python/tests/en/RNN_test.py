@@ -19,7 +19,7 @@ from df.loader import load_polish_all
 
 
 #load model
-model = keras.models.load_model(r"..\model\rnn_model2")
+model = keras.models.load_model(r"..\..\model\en\rnn_model2")
 
 STOPWORDS = stopwords.words('english')
 STOPWORDS.append("rt")
@@ -48,7 +48,7 @@ clean_text()
 
 test_posts = df['tweet'][0:]
 
-with open(r"..\model\rnn_tokenizer", 'rb') as handle:
+with open(r"..\..\model\en\rnn_tokenizer", 'rb') as handle:
     tokenize = pickle.load(handle)
 
 x_test = tokenize.texts_to_matrix(test_posts)
