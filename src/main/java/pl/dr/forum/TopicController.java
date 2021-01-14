@@ -17,6 +17,8 @@ import pl.dr.forum.service.HateSpeechService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,9 +84,19 @@ public class TopicController {
         comment.setHateSpeechCount(comment.getHateSpeechCount() + 1);
         if(comment.getHateSpeechCount() >= Comment.HATE_SPEECH_COUNTER_LIMIT){
             hateSpeechService.markAsHateSpeech(comment);
+            addToHateSpeechCommentsList(comment.getContent());
         }
         commentRepository.save(comment);
         return comment;
+    }
+
+    private void addToHateSpeechCommentsList(String comment) {
+        String result = comment + ",hateful";
+        try (FileWriter pw = new FileWriter("src/main/resources/forum_comments/hate_speech.csv",true)){
+            pw.append(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String toTopicPage(Model model, Topic topic) {
@@ -106,6 +118,11 @@ public class TopicController {
         newComment.setTopic(topic);
         commentRepository.save(newComment);
         topicRepository.save(topic);
+    }
+
+    public static void main(String[] args) {
+        TopicController topicController = new TopicController();
+        topicController.addToHateSpeechCommentsList("Spalić wszystkich żydów");
     }
 
 }

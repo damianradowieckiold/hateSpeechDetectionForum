@@ -5,11 +5,11 @@ import warnings
 import joblib
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
-from df.loader import load_polish_all
+from df.loader import load_english_test
 from sklearn.metrics import accuracy_score
 from preprocessing.en.TextPreprocessing import TextPreprocessor
 
-df = load_polish_all()
+df = load_english_test()
 
 TextPreprocessor().clean_data_frame(df)
 

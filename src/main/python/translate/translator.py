@@ -3,7 +3,7 @@ from os import path
 
 import requests
 
-from preprocessing.en.TextPreprocessing import remove_quotes
+from preprocessing.common import remove_quotes
 
 
 class Translator:

@@ -1,16 +1,20 @@
-import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-# **Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.** 
+
+# **Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.**
 # xlsx from https://github.com/ybalcanci/Hate-Speech-Detector
-df = pd.read_excel(r"..\resources\external\hatespeech_text.xlsx", header = None)
-df.rename(columns={0:'tweet', 1:'label'}, inplace=True)
+from df.loader import load_tweets, load_english_all
+
+# xlsx from https://github.com/ybalcanci/Hate-Speech-Detector
+df = load_tweets()
+df = df.append(load_english_all())
+
 
 import nltk
 nltk.download('stopwords')
 nltk.download('words')
 from preprocessing.en.TextPreprocessing import TextPreprocessor
 
-TextPreprocessor().clean_data_frame(df)
+TextPreprocessor().clean_data_frame(df, VADER=True)
 
 X = df.tweet
 y = df.label

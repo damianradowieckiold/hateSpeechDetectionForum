@@ -27,29 +27,10 @@ public class HateSpeechService {
     }
 
     public boolean isHateSpeech(String text){
-        boolean rnnResult = askRNN(text);
-        boolean randomForestResult = askRandomForest(text);
-        boolean vaderResult = askVADER(text);
-        log.debug("rnn:" + rnnResult);
-        log.debug("random_forest:" + randomForestResult);
-        log.debug("vader:" + vaderResult);
-        return (rnnResult && randomForestResult) ||
-                ((rnnResult || randomForestResult) && vaderResult);
+        return askPython(Path.of("src/main/python/predictor.py"), text);
     }
 
-    private boolean askRandomForest(String content) {
-        return ask(Path.of("src/main/python/predict/en/RandomForest.py"), content);
-    }
-
-    private boolean askRNN(String content) {
-        return ask(Path.of("src/main/python/RNN.py"), content);
-    }
-
-    private boolean askVADER(String content) {
-        return ask(Path.of("src/main/python/VADER.py"), content);
-    }
-
-    private boolean ask(Path scriptPath, String comment){
+    private boolean askPython(Path scriptPath, String comment){
         log.debug("calling script:" + scriptPath);
         try {
             List<String> process_args = new ArrayList<>(Arrays.asList("python", scriptPath.toAbsolutePath().toString(), comment));

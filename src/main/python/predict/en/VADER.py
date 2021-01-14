@@ -1,28 +1,40 @@
 # Based on examples from project https://github.com/cjhutto/vaderSentiment
 # **Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.**
-import sys
 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+from preprocessing.en.TextPreprocessing import TextPreprocessor
 from translate.translator import Translator
 
 
-def translate_and_predict(sentence):
-    translation = Translator().pl_to_en(sentence)
-    return predict(translation)
+class VADER:
+
+    def __init__(self):
+        self.analyzer = SentimentIntensityAnalyzer()
+        self.text_preprocessor = TextPreprocessor()
+
+    def translate_and_predict(self, sentence):
+        translation = Translator().pl_to_en(sentence)
+        return self.predict(translation)
+
+    def predict(self, sentence):
+        try:
+            cleaned_sentence = self.text_preprocessor.clean_sentence(sentence, VADER=True)
+        except IndexError:
+            print("Omitting the sentence (VADER): " + str(sentence))
+            return False
+        polarity_scores = self.analyzer.polarity_scores(cleaned_sentence)
+        return polarity_scores['compound'] < -0.09164180845721778
 
 
-def predict(sentence):
-    analyzer = SentimentIntensityAnalyzer()
-    polarity_scores = analyzer.polarity_scores(sentence)
-    return polarity_scores['compound'] < -0.09799749720143784
-
-
+"""
 if len(sys.argv) > 1:
     sentence_ = sys.argv[1]
 else:
-    sentence_ = input("Wprowadz linie do oceny: ")
+    sentence_ = input("Wprowadz linie do oceny (VADER): ")
 
-print(translate_and_predict(sentence_))
+print(VADER().translate_and_predict(sentence_))
+
+"""
 
 
